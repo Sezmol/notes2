@@ -5,7 +5,7 @@ import React from 'react';
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuth = useAppSelector((state) => state.userInfo.isAuth);
 
-  if (!isAuth) return <Navigate to={'/sign-in'} />;
+  if (!isAuth) return <Navigate to={'/sign-up'} />;
 
   return children;
 };
