@@ -1,0 +1,3 @@
+color: #764abc;
+dark-purple: #2f1d4b;
+header-height: 60px;
