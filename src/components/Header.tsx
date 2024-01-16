@@ -6,7 +6,6 @@ import { clearActiveNote, toggleListsMenu } from '../redux/slices/noteSlice';
 
 const Header = () => {
   const { user, isAuth, sessionId } = useAppSelector((state) => state.userInfo);
-  const noteTitle = useAppSelector((state) => state.noteInfo.title);
 
   const dispatch = useAppDispatch();
 
