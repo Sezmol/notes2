@@ -35,6 +35,7 @@ export const noteSlice = createSlice({
       state.content = '';
       state.id = '';
       state.title = '';
+      state.isListsMenuActive = true;
     },
     toggleListsMenu(state) {
       state.isListsMenuActive = !state.isListsMenuActive;
