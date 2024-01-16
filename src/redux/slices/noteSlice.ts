@@ -13,7 +13,7 @@ const initialState: INoteState = {
   id: '',
   title: '',
   content: '',
-  isListsMenuActive: false,
+  isListsMenuActive: true,
 };
 
 export const noteSlice = createSlice({

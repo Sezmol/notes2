@@ -52,7 +52,6 @@ const SignUp = () => {
         if (!session) throw new Error('Не удалось войти');
 
         const currentUser = await getCurrentUser();
-        console.log(currentUser);
 
         if (!currentUser) throw new Error('Не удалось получить пользователя');
 

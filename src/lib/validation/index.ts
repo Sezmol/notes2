@@ -8,10 +8,10 @@ export const SignUpValidation = z.object({
   username: z
     .string()
     .min(2, {
-      message: 'Слишком короткий логин',
+      message: 'Слишком короткое имя пользователя',
     })
     .max(20, {
-      message: 'Слишком длинный логин',
+      message: 'Слишком длинное имя пользователя',
     }),
 
   password: z
