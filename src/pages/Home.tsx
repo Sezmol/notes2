@@ -22,7 +22,7 @@ function Home() {
         note: { title: debouncedTitle, content: debouncedContent },
       });
 
-    saveNoteOnChange();
+    if (id) saveNoteOnChange();
   }, [debouncedTitle, debouncedContent]);
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,8 +1,13 @@
 import { Models } from 'appwrite';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { clearActiveNote, setActiveNote } from '../redux/slices/noteSlice';
+import {
+  clearActiveNote,
+  setActiveNote,
+  toggleListsMenu,
+} from '../redux/slices/noteSlice';
 import { useDeleteNote } from '../lib/react-query';
 import { OneEightyRing } from 'react-svg-spinners';
+import { useEffect } from 'react';
 
 interface ListProps {
   note: Models.Document;
@@ -11,11 +16,17 @@ interface ListProps {
 const List: React.FC<ListProps> = ({ note }) => {
   const dispatch = useAppDispatch();
   const { id } = useAppSelector((state) => state.noteInfo);
-
   const isActive = id === note.$id;
+  let windowWidth = 0;
+
+  useEffect(() => {
+    windowWidth = window.screen.width;
+    console.log(windowWidth);
+  }, []);
 
   const changeActiveNote = () => {
     dispatch(setActiveNote(note));
+    if (windowWidth <= 425) dispatch(toggleListsMenu());
   };
 
   const { mutateAsync: deleteNoteAsync, isPending: isNoteDeleting } =
@@ -28,16 +39,15 @@ const List: React.FC<ListProps> = ({ note }) => {
   };
 
   return (
-    <div
-      className={`flex justify-between items-center w-full ${
+    <li
+      className={`flex justify-between items-center h-11 w-full ${
         isActive
           ? ' bg-violet-800 text-slate-200'
           : 'bg-slate-200 text-violet-800'
       } text-xl px-2 py-2 rounded-md cursor-pointer`}
       onClick={changeActiveNote}
     >
-      <p>{note.title}</p>
-
+      <p className="overflow-hidden list_title_width">{note.title}</p>
       {isNoteDeleting ? (
         <OneEightyRing />
       ) : (
@@ -65,7 +75,7 @@ const List: React.FC<ListProps> = ({ note }) => {
           </g>
         </svg>
       )}
-    </div>
+    </li>
   );
 };
 

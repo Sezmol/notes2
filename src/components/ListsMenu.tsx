@@ -110,7 +110,7 @@ const ListsMenu: React.FC = () => {
           </svg>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-center flex-col gap-3">
+      <ul className="mt-3 flex items-center justify-center flex-col gap-3">
         {isPending ? (
           <OneEightyRing color="white" />
         ) : filteredNotes.length ? (
@@ -123,7 +123,7 @@ const ListsMenu: React.FC = () => {
             Вы можете создать новую, нажав на плюсик сверху
           </div>
         )}
-      </div>
+      </ul>
     </div>
   );
 };

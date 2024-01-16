@@ -29,3 +29,7 @@ textarea {
 .delete_icon:hover .delete_icon_g {
   fill: red;
 }
+
+.list_title_width {
+  width: 273px;
+}

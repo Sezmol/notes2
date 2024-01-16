@@ -6,6 +6,7 @@ import { SignUpValidation } from '../lib/validation';
 import { useAppDispatch } from '../redux/store';
 import { authenticateUser } from '../redux/slices/userInfoSlice';
 import { getCurrentUser, signInUser } from '../lib/appwrite/api';
+import { OneEightyRing } from 'react-svg-spinners';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const SignUp = () => {
   const [zodErrors, setZodErrors] = useState<z.ZodIssue[]>();
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
-  const { mutateAsync: createNewUser } = useCreateNewUser();
+  const { mutateAsync: createNewUser, isPending } = useCreateNewUser();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,19 +33,28 @@ const SignUp = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setZodErrors([]);
+    setFormErrors([]);
+
     try {
       const validationResult = SignUpValidation.safeParse(formData);
 
       if (validationResult.success) {
-        await createNewUser(formData);
+        const newUser = await createNewUser(formData);
+
+        if (!newUser) throw new Error('Не удалось создать пользвателя');
 
         const session = await signInUser({
           email: formData.email,
           password: formData.password,
         });
 
+        if (!session) throw new Error('Не удалось войти');
+
         const currentUser = await getCurrentUser();
         console.log(currentUser);
+
+        if (!currentUser) throw new Error('Не удалось получить пользователя');
 
         if (currentUser) {
           dispatch(
@@ -52,7 +62,7 @@ const SignUp = () => {
               user: {
                 id: currentUser.$id,
                 email: currentUser.email,
-                username: currentUser.name,
+                username: currentUser.username,
               },
               sessionId: session.$id,
             })
@@ -66,7 +76,18 @@ const SignUp = () => {
         setZodErrors(validationResult.error.issues);
       }
     } catch (error: any) {
-      setFormErrors((prev) => [...prev, error]);
+      setFormErrors((prev) => {
+        return [
+          ...prev,
+          error?.message ===
+          'A user with the same id, email, or phone already exists in this project.'
+            ? 'Пользователь с данной почтой уже существует'
+            : error?.message ===
+              ' Rate limit for the current endpoint has been exceeded. Please try again after some time.'
+            ? 'Вы превысили лимит запросов, пожалуйста, попробуйте позднее'
+            : 'Произошла ошибка при входе, попробуйте еще раз позднее',
+        ];
+      });
     }
   };
 
@@ -76,7 +97,7 @@ const SignUp = () => {
         onSubmit={(e) => onSubmit(e)}
         className="flex flex-col justify-center items-center gap-3"
       >
-        <h1 className="font-bold text-lg">
+        <h1 className="font-bold text-center text-lg">
           Зарегистрируйтесь, пожалуйста, чтобы пользоваться сайтом
         </h1>
         <div>
@@ -90,7 +111,7 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <h2>Логин</h2>
+          <h2>Имя пользователя</h2>
           <input
             value={formData.username}
             onChange={(e) => handleChange(e)}
@@ -116,14 +137,14 @@ const SignUp = () => {
               {error.message}
             </p>
           ))}
-          {formErrors.map((error) => (
+          {Array.from(new Set(formErrors)).map((error) => (
             <p key={error} className="text-red-600">
               {error}
             </p>
           ))}
         </div>
-        <button className="mt-2 py-2 px-3 bg-violet-500 rounded-md">
-          Зарегистрироваться
+        <button className="flex gap-2 mt-2 py-2 px-3 bg-violet-500 rounded-md">
+          Зарегистрироваться {isPending && <OneEightyRing />}
         </button>
         <p>
           Уже есть аккаунт?

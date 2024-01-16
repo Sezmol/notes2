@@ -4,6 +4,9 @@ import { useSignInUser } from '../lib/react-query';
 import { useAppDispatch } from '../redux/store';
 import { authenticateUser } from '../redux/slices/userInfoSlice';
 import { getCurrentUser } from '../lib/appwrite/api';
+import { z } from 'zod';
+import { SignInValidation } from '../lib/validation';
+import { OneEightyRing } from 'react-svg-spinners';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -12,9 +15,10 @@ const SignIn = () => {
     email: '',
     password: '',
   });
+  const [zodErrors, setZodErrors] = useState<z.ZodIssue[]>();
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
-  const { mutateAsync: signInUser } = useSignInUser();
+  const { mutateAsync: signInUser, isPending } = useSignInUser();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,31 +31,40 @@ const SignIn = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setZodErrors([]);
+    setFormErrors([]);
+
     try {
-      const session = await signInUser(formData);
+      const validationResult = SignInValidation.safeParse(formData);
 
-      if (!session) throw new Error('Не удалось войти');
+      if (validationResult.success) {
+        const session = await signInUser(formData);
 
-      console.log(session);
+        if (!session) throw new Error('Не удалось войти');
 
-      const currentUser = await getCurrentUser();
+        const currentUser = await getCurrentUser();
 
-      if (currentUser) {
-        dispatch(
-          authenticateUser({
-            user: {
-              id: currentUser.$id,
-              email: currentUser.email,
-              username: currentUser.name,
-            },
-            sessionId: session.$id,
-          })
-        );
+        console.log(currentUser);
+
+        if (currentUser) {
+          dispatch(
+            authenticateUser({
+              user: {
+                id: currentUser.$id,
+                email: currentUser.email,
+                username: currentUser.username,
+              },
+              sessionId: session.$id,
+            })
+          );
+        } else {
+          throw new Error('Не удалось зарегистрироваться');
+        }
+
+        navigate('/');
       } else {
-        throw new Error('Не удалось зарегистрироваться');
+        setZodErrors(validationResult.error.issues);
       }
-
-      navigate('/');
     } catch (error: any) {
       setFormErrors((prev) => [
         ...prev,
@@ -89,6 +102,11 @@ const SignIn = () => {
           />
         </div>
         <div>
+          {zodErrors?.map((error) => (
+            <p key={error.message} className="text-red-600">
+              {error.message}
+            </p>
+          ))}
           {formErrors.map((error) => (
             <p key={error} className="text-red-600">
               {error ===
@@ -98,8 +116,8 @@ const SignIn = () => {
             </p>
           ))}
         </div>
-        <button className="mt-2 py-2 px-3 bg-violet-500 rounded-md">
-          Войти
+        <button className="flex gap-2 mt-2 py-2 px-3 bg-violet-500 rounded-md">
+          Войти {isPending && <OneEightyRing />}
         </button>
         <p>
           Нету аккаунта?

@@ -7,6 +7,7 @@ import { clearActiveNote, toggleListsMenu } from '../redux/slices/noteSlice';
 const Header = () => {
   const { user, isAuth, sessionId } = useAppSelector((state) => state.userInfo);
   const noteTitle = useAppSelector((state) => state.noteInfo.title);
+
   const dispatch = useAppDispatch();
 
   const signOut = async () => {
@@ -30,10 +31,9 @@ const Header = () => {
         <div className="w-6 mt-1 h-1 bg-slate-200"></div>
       </div>
       <h1 className="font-bold flex-1 text-center sm:hidden text-4xl">
-        {noteTitle}
+        {user.username}
       </h1>
       <div className="flex items-center gap-4">
-        <h2 className="text-lg">{user.username}</h2>
         <div>
           {isAuth ? (
             <div onClick={signOut} className="flex cursor-pointer gap-1">
