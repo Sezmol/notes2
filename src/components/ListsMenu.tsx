@@ -15,16 +15,16 @@ const ListsMenu: React.FC = () => {
   );
   const newNote = { title: 'New Note', content: 'This is note' };
   const [search, setSearch] = useState('');
-  const { mutateAsync: mutateCreateNewNote, isPending: isNoteCreating } =
+  const { mutateAsync: createNewNote, isPending: isNoteCreating } =
     useCreateNewNote(newNote, userId);
 
   const { data: notes, isPending } = useGetAllNotes(userId);
 
   useEffect(() => {
-    if (typeof notes !== 'object' && !isPending) {
+    if (Array.isArray(notes) && notes.length && !isPending) {
       dispatch(setActiveNote(notes[0]));
     }
-  }, [isPending]);
+  }, [dispatch, isPending]);
 
   const filteredNotes = notes?.filter((note: Models.Document & INewNote) => {
     const searchInput = search.toLowerCase();
@@ -33,10 +33,6 @@ const ListsMenu: React.FC = () => {
 
     return title.includes(searchInput) || content.includes(searchInput);
   });
-
-  const createNewNote = async () => {
-    await mutateCreateNewNote();
-  };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);

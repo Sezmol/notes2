@@ -9,10 +9,14 @@ const Header = () => {
 
   const dispatch = useAppDispatch();
 
-  const signOut = async () => {
-    dispatch(unauthenticateUser());
-    dispatch(clearActiveNote());
-    await signOutUser(sessionId);
+  const handleSignOut = async () => {
+    try {
+      dispatch(unauthenticateUser());
+      dispatch(clearActiveNote());
+      await signOutUser(sessionId);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const handleToggleListsMenu = () => {
@@ -25,9 +29,9 @@ const Header = () => {
         onClick={handleToggleListsMenu}
         className="cursor-pointer flex-col justify-center items-center h-5 mdMin:hidden"
       >
-        <div className="w-6 h-1 bg-slate-200"></div>
-        <div className="w-6 mt-1 h-1 bg-slate-200"></div>
-        <div className="w-6 mt-1 h-1 bg-slate-200"></div>
+        <span className="w-6 h-1 bg-slate-200"></span>
+        <span className="w-6 mt-1 h-1 bg-slate-200"></span>
+        <span className="w-6 mt-1 h-1 bg-slate-200"></span>
       </div>
       <h1 className="font-bold flex-1 text-center sm:hidden text-4xl">
         {user.username}
@@ -35,7 +39,10 @@ const Header = () => {
       <div className="flex items-center gap-4">
         <div>
           {isAuth ? (
-            <div onClick={signOut} className="flex cursor-pointer gap-1">
+            <button
+              onClick={handleSignOut}
+              className="flex cursor-pointer gap-1"
+            >
               <p>Выйти</p>
               <svg
                 fill="#ffffff"
@@ -59,7 +66,7 @@ const Header = () => {
                   />
                 </g>
               </svg>
-            </div>
+            </button>
           ) : (
             <Link to="sign-in">Войти</Link>
           )}

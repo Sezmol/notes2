@@ -1,12 +1,12 @@
 import { ChangeEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSignInUser } from '../lib/react-query';
+import { z } from 'zod';
+import { OneEightyRing } from 'react-svg-spinners';
 import { useAppDispatch } from '../redux/store';
 import { authenticateUser } from '../redux/slices/userInfoSlice';
+import { useSignInUser } from '../lib/react-query';
 import { getCurrentUser } from '../lib/appwrite/api';
-import { z } from 'zod';
 import { SignInValidation } from '../lib/validation';
-import { OneEightyRing } from 'react-svg-spinners';
 
 const SignIn = () => {
   const navigate = useNavigate();

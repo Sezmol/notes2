@@ -7,7 +7,7 @@ import {
 } from '../redux/slices/noteSlice';
 import { useDeleteNote } from '../lib/react-query';
 import { OneEightyRing } from 'react-svg-spinners';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ListProps {
   note: Models.Document;
@@ -15,13 +15,19 @@ interface ListProps {
 
 const List: React.FC<ListProps> = ({ note }) => {
   const dispatch = useAppDispatch();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { id } = useAppSelector((state) => state.noteInfo);
   const isActive = id === note.$id;
-  let windowWidth = 0;
 
   useEffect(() => {
-    windowWidth = window.screen.width;
-    console.log(windowWidth);
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const changeActiveNote = () => {
@@ -32,11 +38,14 @@ const List: React.FC<ListProps> = ({ note }) => {
   const { mutateAsync: deleteNoteAsync, isPending: isNoteDeleting } =
     useDeleteNote(note.$id);
 
-  const deleteNote = async (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    e.stopPropagation();
-    if (isActive) dispatch(clearActiveNote());
-    await deleteNoteAsync();
-  };
+  const handleDeleteNote = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (isActive) dispatch(clearActiveNote());
+      await deleteNoteAsync();
+    },
+    [isActive, deleteNoteAsync, dispatch]
+  );
 
   return (
     <li
@@ -52,7 +61,7 @@ const List: React.FC<ListProps> = ({ note }) => {
         <OneEightyRing />
       ) : (
         <svg
-          onClick={(e) => deleteNote(e)}
+          onClick={(e) => handleDeleteNote(e)}
           width="24px"
           height="24px"
           viewBox="0 -0.5 21 21"

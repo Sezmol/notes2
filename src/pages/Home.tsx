@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from '../components/Header';
 import ListsMenu from '../components/ListsMenu';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -15,6 +15,8 @@ function Home() {
   const debouncedTitle = useDebounce(title, 500);
   const debouncedContent = useDebounce(content, 500);
 
+  const { mutateAsync: saveNote, isPending: isNoteSaving } = useSaveNote();
+
   useEffect(() => {
     const saveNoteOnChange = async () =>
       await saveNote({
@@ -24,16 +26,6 @@ function Home() {
 
     if (id) saveNoteOnChange();
   }, [debouncedTitle, debouncedContent]);
-
-  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeNoteTitle(e.target.value));
-  };
-
-  const handleChangeTextarea = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(changeNoteContent(e.target.value));
-  };
-
-  const { mutateAsync: saveNote, isPending: isNoteSaving } = useSaveNote();
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -51,7 +43,7 @@ function Home() {
               className="bg-slate-900 text-2xl h-full w-full px-3 py-1"
               placeholder="Название заметки..."
               value={title}
-              onChange={(e) => handleChangeInput(e)}
+              onChange={(e) => dispatch(changeNoteTitle(e.target.value))}
             />
             <div className="mr-4">
               {isNoteSaving ? (
@@ -84,7 +76,7 @@ function Home() {
 
           <textarea
             value={content}
-            onChange={(e) => handleChangeTextarea(e)}
+            onChange={(e) => dispatch(changeNoteContent(e.target.value))}
             placeholder="Содержимое заметки..."
             className="flex-1 p-3 text-2xl bg-slate-900"
           ></textarea>
@@ -95,16 +87,3 @@ function Home() {
 }
 
 export default Home;
-
-// : isSuccess ? (
-//   <svg
-//     viewBox="0 0 512 512"
-//     fill="#ffffff"
-//     stroke="#ffffff"
-//     xmlns="http://www.w3.org/2000/svg"
-//     className="h-12 w-12"
-//   >
-//     <g>
-//       <polygon points="440.469,73.413 218.357,295.525 71.531,148.709 0,220.229 146.826,367.055 218.357,438.587 289.878,367.055 512,144.945"></polygon>
-//     </g>
-//   </svg>
