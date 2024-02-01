@@ -6,6 +6,8 @@ import { Models } from 'appwrite';
 import { setActiveNote } from '../redux/slices/noteSlice';
 import { OneEightyRing } from 'react-svg-spinners';
 import { INewNote } from '../types';
+import AddSvg from '../svg/AddSvg';
+import SearchSvg from '../svg/SearchSvg';
 
 const ListsMenu: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -48,37 +50,9 @@ const ListsMenu: React.FC = () => {
         {isNoteCreating ? (
           <OneEightyRing color="white" />
         ) : (
-          <svg
-            width="24px"
-            height="24px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="cursor-pointer mr-1"
-            onClick={async () => await createNewNote()}
-          >
-            <g strokeWidth="0"></g>
-            <g
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="0.72"
-            ></g>
-            <g>
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-              ></circle>
-              <path
-                d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              ></path>
-            </g>
-          </svg>
+          <div onClick={async () => await createNewNote()}>
+            <AddSvg className="cursor-pointer mr-1" />
+          </div>
         )}
 
         <div className=" relative flex justify-between items-center">
@@ -88,22 +62,7 @@ const ListsMenu: React.FC = () => {
             className="bg-slate-200 pl-7 pr-1 py-1 rounded-md"
             type="text"
           />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24px"
-            height="24px"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="absolute"
-          >
-            <path
-              d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-              stroke="#000000"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-          </svg>
+          <SearchSvg className="absolute" />
         </div>
       </div>
       <ul className="mt-3 flex items-center justify-center flex-col gap-3">
