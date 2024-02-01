@@ -44,8 +44,6 @@ const SignIn = () => {
 
         const currentUser = await getCurrentUser();
 
-        console.log(currentUser);
-
         if (currentUser) {
           dispatch(
             authenticateUser({
@@ -116,7 +114,10 @@ const SignIn = () => {
             </p>
           ))}
         </div>
-        <button className="flex gap-2 mt-2 py-2 px-3 bg-violet-500 rounded-md">
+        <button
+          disabled={isPending}
+          className="flex gap-2 mt-2 py-2 px-3 bg-violet-500 rounded-md"
+        >
           Войти {isPending && <OneEightyRing />}
         </button>
         <p>

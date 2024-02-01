@@ -142,7 +142,10 @@ const SignUp = () => {
             </p>
           ))}
         </div>
-        <button className="flex gap-2 mt-2 py-2 px-3 bg-violet-500 rounded-md">
+        <button
+          disabled={isPending}
+          className="flex gap-2 mt-2 py-2 px-3 bg-violet-500 rounded-md"
+        >
           Зарегистрироваться {isPending && <OneEightyRing />}
         </button>
         <p>
