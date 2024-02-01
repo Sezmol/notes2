@@ -27,7 +27,7 @@ const Header = () => {
     <header className="flex justify-between items-center h-20 px-6 py-4 border-b border-b-slate-800">
       <div
         onClick={handleToggleListsMenu}
-        className="cursor-pointer flex-col justify-center items-center h-5 mdMin:hidden"
+        className="flex cursor-pointer flex-col justify-center items-center h-5 mdMin:hidden"
       >
         <span className="w-6 h-1 bg-slate-200"></span>
         <span className="w-6 mt-1 h-1 bg-slate-200"></span>
